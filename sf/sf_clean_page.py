@@ -1,4 +1,4 @@
-""" Clean SF web pages script v0.1 """
+""" Clean SF web pages script v0.2 """
 
 from bs4 import BeautifulSoup
 import os
@@ -7,12 +7,15 @@ import re
 
 # Function to get a list of all HTML files in a given directory
 def get_html_files(directory):
-    html_files = [] 
+    html_files = []
     for root, _, files in os.walk(directory):
         for file in files:
-            if file.endswith(".html"):  # Check if the file has a .html extension
-                html_files.append(os.path.join(root, file))  # Add the absolute path of the HTML file
+            # Check if the file has a .html extension
+            if file.endswith('.html'):
+                # Add the absolute path of the HTML file
+                html_files.append(os.path.join(root, file))
     return html_files  # Return the list of HTML file paths
+
 
 # Get the absolute path to the current script and call function
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -22,10 +25,10 @@ html_files = get_html_files(script_dir)
 # Looping through files, cleaning and save them
 for html_file in html_files:
     # Open the HTML file
-    with open(html_file, 'r') as f:
+    with open(html_file, 'r', encoding='utf-8') as f:
         html = f.read()
 
-    # Remove the SingleFile's comment 
+    # Remove the SingleFile's comment
     cleaned_html = re.sub(r'<!--.*?-->', '', html, flags=re.DOTALL)
 
     # Parse the HTML file
@@ -33,7 +36,7 @@ for html_file in html_files:
 
     # List of classes to remove
     classes_to_remove = [
-        'sf-header sf-page__header',                        # Header
+        'sf-header__navigation-and-user-menu',              # User menu and link to main page
         'sf-breadcrumbs sf-courseware-page__breadcrumbs',   # Address bar
         'sequence-tab-view-navigation__tabs-container',     # Navigation bar
         'sequence-tab-view-navigation__button-with-fade',   # Navigation arrow
@@ -49,12 +52,11 @@ for html_file in html_files:
     # Loop through the classes and remove the tags
     for class_name in classes_to_remove:
         tags_to_remove = soup.find_all(class_=class_name)
-        print(tags_to_remove)
         for tag in tags_to_remove:
             tag.decompose()
 
     # Save the modified HTML file
-    with open(html_file, 'w') as f:
+    with open(html_file, 'w', encoding='utf-8') as f:
         f.write(str(soup))
 
 # # # Stage 2 - Cleaning answers
