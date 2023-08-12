@@ -1,8 +1,8 @@
 """ Clean SF web pages script v0.2 """
 
 from bs4 import BeautifulSoup
-import os
-import re
+import os, re
+# import 
 
 
 # Function to get a list of all HTML files in a given directory
